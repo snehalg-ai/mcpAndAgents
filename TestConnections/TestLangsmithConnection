@@ -1,0 +1,17 @@
+import os
+
+from dotenv import load_dotenv
+from langsmith import Client
+
+load_dotenv()
+
+client = Client()
+
+# Test connection
+try:
+    # This will attempt to connect to Langsmith
+    projects = list(client.list_projects(limit=1))
+    print("Langsmith connection successful!")
+    print(f"Connected to project: {os.getenv('LANGCHAIN_PROJECT')}")
+except Exception as e:
+    print(f"Langsmith connection failed: {e}")
