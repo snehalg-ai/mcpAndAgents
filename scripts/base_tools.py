@@ -18,8 +18,16 @@ def web_search(query: str):
     Output:
         JSON string of top results (max_results=2).
     """
-    response = ollama.web_search(query=query, max_results=2)
-    return response.results
+    if not os.getenv("OLLAMA_API_KEY"):
+        return (
+            "Web search unavailable: set OLLAMA_API_KEY in .env "
+            "(Ollama Cloud API key, not local Ollama)."
+        )
+    try:
+        response = ollama.web_search(query=query, max_results=2)
+        return response.results
+    except Exception as exc:
+        return f"Web search failed: {exc}"
 
 
 # -------------------------
@@ -38,9 +46,15 @@ def get_weather(location: str):
     Returns:
         Current weather information including temperature and conditions.
     """
-    url = f"http://api.weatherapi.com/v1/current.json?key={os.getenv('WEATHER_API_KEY')}&q={location}&aqi=no"
+    api_key = os.getenv("WEATHER_API_KEY")
+    if not api_key:
+        return "Weather unavailable: set WEATHER_API_KEY in .env"
 
-    response = requests.get(url=url, timeout=10)
-    response.raise_for_status()
+    url = f"http://api.weatherapi.com/v1/current.json?key={api_key}&q={location}&aqi=no"
 
-    return response.json()
+    try:
+        response = requests.get(url=url, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except Exception as exc:
+        return f"Weather request failed: {exc}"

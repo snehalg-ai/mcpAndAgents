@@ -16,6 +16,7 @@ from langchain.messages import HumanMessage
 
 from langchain_mcp_adapters.client import MultiServerMCPClient
 import asyncio
+from datetime import datetime, timedelta
 
 # Desktop OAuth client JSON (same style as Calendar MCP). Token is stored separately.
 _CREDENTIALS_PATH = Path.home() / ".gmail-mcp" / "gcp-oauth.keys.json"
